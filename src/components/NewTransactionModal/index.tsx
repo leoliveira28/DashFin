@@ -12,18 +12,30 @@ interface NewTransactionModalProps {
     onRequestClose: () => void;
 }
 export function NewTransactionModal({isOpen, onRequestClose}: NewTransactionModalProps) {
-    const transactions = useContext(TransactionContext)
+    const {createTransaction} = useContext(TransactionContext)
 
 
     const [type, setType] = useState('deposit');
     const [title, setTitle] = useState('');
-    const [value, setValue] = useState(0);
+    const [amount, setAmount] = useState(0);
     const [category, setCategory] = useState(''); 
     
-function handleCreateNewTransaction(event: FormEvent) {
+async function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault();
+    await createTransaction({
+        title,
+        amount,
+        category,
+        type,
+    })
+    setTitle('');
+    setAmount(0);
+    setCategory('');
+    setType('deposit')
+    onRequestClose();
     
 }
+   
     return (
         
             <Modal isOpen={isOpen}
@@ -61,8 +73,8 @@ function handleCreateNewTransaction(event: FormEvent) {
             <input
           type="number"
           placeholder="Valor"
-          value={value}
-          onChange={event => setValue(Number(event.target.value))}/>
+          value={amount}
+          onChange={event => setAmount(Number(event.target.value))}/>
             <button type='submit'>Cadastrar</button>
             </Container>
             </Modal>
